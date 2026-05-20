@@ -19,6 +19,10 @@ We compete in **both** categories:
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
+**AI agents:** read [AGENTS.md](AGENTS.md) for project context, conventions, and commands.
+
+**Feature planning:** use [docs/PRD-GUIDELINES.md](docs/PRD-GUIDELINES.md) for PRD template and review checklist.
+
 ## Quick start
 
 ```bash
