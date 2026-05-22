@@ -11,7 +11,7 @@ const features = [
   {
     icon: Cpu,
     title: 'Autonomous Planning',
-    desc: 'OpenRouter-powered LLM plans multi-step Ace API workflows. No human in the loop — the agent decides what to call and how to pay.',
+    desc: 'OpenRouter-powered LLM plans multi-step Ace API workflows. No human in the loop, the agent decides what to call and how to pay.',
   },
   {
     icon: Zap,
@@ -113,22 +113,9 @@ export default function Landing() {
 
         {/* Content */}
         <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/[0.04] px-4 py-1.5 text-sm text-purple-400"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-purple-500" />
-            </span>
-            OOBE x Ace Data Cloud Bounty
-          </motion.div>
-
           <div className="mb-6">
             <StaggeredText
-              text="Zero — Autonomous Agent"
+              text="Zero: Autonomous Agent"
               as="h1"
               segmentBy="words"
               delay={80}

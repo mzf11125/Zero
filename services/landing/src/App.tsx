@@ -30,6 +30,9 @@ export default function App() {
       <main className="flex-1">
         <Outlet />
       </main>
+      <footer className="border-t border-white/[0.05] bg-black py-6 text-center">
+        <span className="text-xs text-gray-600">by Daemon Blockint Technologies</span>
+      </footer>
     </div>
   )
 }
