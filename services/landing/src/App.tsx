@@ -1,10 +1,19 @@
-import { Outlet, Link } from 'react-router-dom'
+import { Outlet, Link, useLocation } from 'react-router-dom'
 
 export default function App() {
+  const location = useLocation()
+  const isLanding = location.pathname === '/'
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b border-gray-800 bg-gray-950/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+    <div className="min-h-screen flex flex-col bg-black text-gray-100 antialiased">
+      <header
+        className={`sticky top-0 z-50 border-b transition-colors ${
+          isLanding
+            ? 'border-transparent bg-transparent'
+            : 'border-white/[0.05] bg-black/80 backdrop-blur-md'
+        }`}
+      >
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <Link to="/" className="text-lg font-semibold tracking-tight text-purple-400 hover:text-purple-300 transition-colors">
             Zero
           </Link>
@@ -21,9 +30,6 @@ export default function App() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <footer className="border-t border-gray-800 py-6 text-center text-xs text-gray-600">
-        Zero — Autonomous agent for the OOBE x Ace Data Cloud bounty
-      </footer>
     </div>
   )
 }

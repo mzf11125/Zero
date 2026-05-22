@@ -34,14 +34,14 @@ export default function Dashboard() {
   }, [apiKeyReady, fetchRuns])
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8 space-y-6">
+    <div className="mx-auto max-w-4xl px-6 py-8 space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <h2 className="text-xl font-semibold text-gray-200">Dashboard</h2>
+        <h2 className="text-xl font-semibold text-gray-100">Dashboard</h2>
         <ApiKeyInput onKeySet={(key) => setApiKeyReady(key.length > 0)} />
       </div>
 
       {!apiKeyReady && (
-        <div className="border border-amber-800 rounded-lg p-4 bg-amber-950/30 text-sm text-amber-400">
+        <div className="rounded-lg border border-amber-500/20 bg-amber-500/[0.04] p-4 text-sm text-amber-400">
           Set your API key above to interact with Zero.
         </div>
       )}
