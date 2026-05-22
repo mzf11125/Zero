@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/nyokokarmanugroho/zero/gateway/internal/runs"
@@ -30,16 +31,31 @@ func main() {
 
 	store := runs.NewStore()
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /health", func(w http.ResponseWriter, _ *http.Request) {
+	cors := server.CORSMiddleware
+
+	mux.HandleFunc("GET /health", cors(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(map[string]string{"status": "ok", "service": "zero-gateway"})
-	})
+	}))
 
 	createRun := server.CreateRunHandler(store)
 	createRun = server.WithAPIKey(createRun)
 	createRun = server.WithRateLimit(limiter, createRun)
-	mux.HandleFunc("POST /v1/runs", createRun)
-	mux.HandleFunc("GET /v1/runs/{id}", server.GetRunHandler(store))
+	mux.HandleFunc("POST /v1/runs", cors(createRun))
+	mux.HandleFunc("GET /v1/runs/{id}", cors(server.GetRunHandler(store)))
+	mux.HandleFunc("GET /v1/runs", cors(server.ListRunsHandler(store)))
+
+	landingDir := os.Getenv("LANDING_DIST_DIR")
+	if landingDir != "" {
+		fs := http.FileServer(http.Dir(landingDir))
+		mux.HandleFunc("GET /", cors(func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path == "/" || !strings.Contains(r.URL.Path, "/v1/") {
+				fs.ServeHTTP(w, r)
+				return
+			}
+			http.NotFound(w, r)
+		}))
+	}
 
 	srv := &http.Server{
 		Addr:              addr,

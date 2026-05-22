@@ -8,6 +8,9 @@ use solana_sdk::pubkey::Pubkey;
 use solana_sdk::signature::{Keypair, Signer};
 use solana_sdk::system_instruction;
 use solana_sdk::transaction::Transaction;
+
+mod register_agent;
+
 pub struct SapContext {
     rpc: RpcClient,
     agent: Keypair,
@@ -50,8 +53,31 @@ impl SapContext {
         Ok(agents.iter().any(|(pubkey, _)| *pubkey == pk))
     }
 
-    pub fn ensure_registered(&self, _name: &str, _description: &str) -> ChainResult<bool> {
-        self.agent_registered()
+    pub fn ensure_registered(&self) -> ChainResult<(bool, Vec<String>)> {
+        if self.agent_registered()? {
+            return Ok((true, vec![]));
+        }
+
+        let ix = register_agent::build_register_agent_instruction(&self.agent, &self.program_id);
+
+        let blockhash = self
+            .rpc
+            .get_latest_blockhash()
+            .map_err(|e| ChainError::Rpc(e.to_string()))?;
+
+        let tx = Transaction::new_signed_with_payer(
+            &[ix],
+            Some(&self.agent.pubkey()),
+            &[&self.agent],
+            blockhash,
+        );
+
+        let sig = self
+            .rpc
+            .send_and_confirm_transaction(&tx)
+            .map_err(|e| ChainError::Sap(format!("register_agent: {e}")))?;
+
+        Ok((false, vec![sig.to_string()]))
     }
 
     pub fn sentinel_check(&self, task_type: &str, query: &str) -> (bool, u32, String) {

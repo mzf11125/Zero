@@ -16,6 +16,7 @@ We compete in **both** categories:
 | Chain | Rust + gRPC | `services/chain` |
 | Agent | TypeScript | `services/orchestrator` |
 | Demo API | Go | `services/gateway` |
+| Landing | React + Vite + Tailwind | `services/landing` |
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
@@ -43,17 +44,30 @@ cd services/orchestrator && pnpm run worker
 
 [docs/VERIFIED.md](docs/VERIFIED.md)
 
+## Frontend (services/landing)
+
+```bash
+cd services/landing && pnpm install && pnpm run dev   # Vite HMR on :5173
+# or
+make dev-landing                                        # same from root
+make build-landing                                      # → services/landing/dist/
+```
+
+The dashboard proxies `/v1/*` requests to the Go gateway (`:8080`). Set `GATEWAY_API_KEY` in the dashboard's API key input to create runs.
+
 ## Planned
 
 - Full SAP `registerAgent` instruction wiring in Rust (currently: discovery + TS SDK attempt + on-chain health)
-- `zero-landing` dashboard wired to `GET /v1/runs/{id}` (Fase 5)
+- Real-time run status via SSE (currently: polling)
 
 ## Makefile targets
 
 | Target | Description |
 |--------|-------------|
 | `make proto-gen` | Generate stubs (Rust via build.rs; TS via protoc if installed) |
-| `make build-all` | chain + orchestrator + gateway |
+| `make build-all` | chain + orchestrator + gateway + landing |
+| `make build-landing` | Build React SPA to `services/landing/dist/` |
+| `make dev-landing` | Vite dev server with HMR on `:5173` |
 | `make dev-up` | Local chain + one-shot worker |
 | `make spawn-up` | Validate Spawn config files |
 | `make verified` | Fail if VERIFIED.md has no explorer links |
@@ -75,7 +89,11 @@ curl -s -X POST localhost:8080/v1/runs \
   -H 'Content-Type: application/json' \
   -H "X-API-Key: ${GATEWAY_API_KEY}" \
   -d '{"query":"Solana agents","type":"ace-research","estimatedValueUsd":0.001}'
+curl -s localhost:8080/v1/runs           # list all runs
+curl -s localhost:8080/v1/runs/{id}      # get run status
 ```
+
+In production, set `LANDING_DIST_DIR=../landing/dist` to serve the web dashboard from the gateway.
 
 ## License
 

@@ -1,6 +1,7 @@
 .env
 .env.local
 *.local
+*.tsbuildinfo
 node_modules/
 dist/
 target/

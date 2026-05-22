@@ -55,6 +55,16 @@ func (s *Store) Get(id string) (*Run, bool) {
 	return r, ok
 }
 
+func (s *Store) List() []*Run {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	res := make([]*Run, 0, len(s.data))
+	for _, r := range s.data {
+		res = append(res, r)
+	}
+	return res
+}
+
 func (s *Store) Update(id string, fn func(*Run)) (*Run, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()

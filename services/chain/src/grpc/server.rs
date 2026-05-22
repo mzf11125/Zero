@@ -49,16 +49,21 @@ impl ChainService for ChainGrpc {
         &self,
         request: Request<EnsureAgentRegisteredRequest>,
     ) -> Result<Response<EnsureAgentRegisteredResponse>, Status> {
-        let req = request.into_inner();
-        let registered = self
+        let _req = request.into_inner();
+        let (already_registered, txs) = self
             .sap
-            .ensure_registered(&req.agent_name, &req.description)
+            .ensure_registered()
             .map_err(Status::from)?;
+
+        let registration_txs = txs
+            .iter()
+            .map(|sig| Self::tx_proof(sig, "register_agent"))
+            .collect();
 
         Ok(Response::new(EnsureAgentRegisteredResponse {
             agent_pubkey: self.sap.agent_pubkey().to_string(),
-            already_registered: registered,
-            registration_txs: vec![],
+            already_registered,
+            registration_txs,
         }))
     }
 

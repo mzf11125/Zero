@@ -6643,10 +6643,12 @@ name = "zero-chain"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "borsh 1.6.1",
  "dotenvy",
  "prost",
  "serde",
  "serde_json",
+ "sha2 0.10.9",
  "solana-client",
  "solana-sdk",
  "thiserror 2.0.18",
